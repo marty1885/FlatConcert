@@ -202,8 +202,9 @@ public:
 			float ampR = 1.f/dist2REar;
 			float ampL = 1.f/dist2LEar;
 
-			ampR = std::min(ampR, 5.f);
-			ampL = std::min(ampL, 5.f);
+			//clamp max amplitude
+			ampR = std::min(ampR, 3.f);
+			ampL = std::min(ampL, 3.f);
 
 			out[1][i] = sampleR*ampR;
 			out[0][i] = sampleL*ampL;

@@ -225,7 +225,7 @@ public:
 	PlaybackSystem()
 	{
 		const int SAMPLE_RATE = 44100;
-		const int FRAMES_PER_BUFFER = 256;
+		const int FRAMES_PER_BUFFER = 256;//low sample num is required for good doppler effect simulation;
 		portaudio::System &sys = portaudio::System::instance();
 		outParams = new portaudio::DirectionSpecificStreamParameters(sys.defaultOutputDevice()
 			, 2, portaudio::FLOAT32, false
@@ -310,7 +310,7 @@ int main(int argc, char const *argv[])
 
 	bool rightButtonDown = false;
 
-	window.setFramerateLimit(60);
+	//window.setFramerateLimit(60);
 	while (window.isOpen())
 	{
 		// check all the window's events that were triggered since the last iteration of the loop

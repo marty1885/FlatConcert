@@ -234,7 +234,7 @@ public:
 	PlaybackSystem()
 	{
 		const int SAMPLE_RATE = 44100;
-		const int FRAMES_PER_BUFFER = 256;//low sample num is required for good doppler effect simulation;
+		const int FRAMES_PER_BUFFER = 8;//low sample num is required for good doppler effect simulation;
 		portaudio::System &sys = portaudio::System::instance();
 		outParams = new portaudio::DirectionSpecificStreamParameters(sys.defaultOutputDevice()
 			, 2, portaudio::FLOAT32, false
@@ -319,7 +319,6 @@ int main(int argc, char const *argv[])
 
 	bool rightButtonDown = false;
 
-	//window.setFramerateLimit(60);
 	while (window.isOpen())
 	{
 		// check all the window's events that were triggered since the last iteration of the loop
@@ -329,27 +328,28 @@ int main(int argc, char const *argv[])
 			// "close requested" event: we close the window
 			if (event.type == sf::Event::Closed)
 				window.close();
-			if(event.type == sf::Event::MouseButtonPressed)
+			else if(event.type == sf::Event::MouseButtonPressed)
 			{
 				if (event.mouseButton.button == sf::Mouse::Right)
 				{
 					rightButtonDown = true;
 				}
 			}
-			if(event.type == sf::Event::MouseButtonReleased)
+			else if(event.type == sf::Event::MouseButtonReleased)
 			{
 				if (event.mouseButton.button == sf::Mouse::Right)
 				{
 					rightButtonDown = false;
 				}
 			}
-			if (event.type == sf::Event::MouseMoved)
+			else if (event.type == sf::Event::MouseMoved)
 			{
 				if(rightButtonDown)
 				{
 					sf::Vector2i position = sf::Mouse::getPosition(window);
-					vec2 windowPos(position.x-(int)windowSize.x/2,-(position.y-(int)windowSize.y/2));
-					vec2 pos = windowPos/350.0f;
+					vec2 windowPos(position.x-(int)window.getSize().x/2,-(position.y-(int)window.getSize().y/2));
+					float widnowsHeight = window.getSize().y;
+					vec2 pos = windowPos/350.f;
 					std::cout << pos.x << "\t" << pos.y << std::endl;
 					pos*=6.0;
 					audience.setPosition(pos);

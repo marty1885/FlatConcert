@@ -181,8 +181,11 @@ public:
 		float dist2LEar = audience->getEars()[0].distance2(*source);
 		float dist2REar = audience->getEars()[1].distance2(*source);
 		int sampleRate = source->getSampleRate();
-		int delayR = sampleRate*sqrtf(dist2REar)/speedOfsound;
-		int delayL = sampleRate*sqrtf(dist2LEar)/speedOfsound;
+		float delayR = sampleRate*sqrtf(dist2REar)/speedOfsound;
+		float delayL = sampleRate*sqrtf(dist2LEar)/speedOfsound;
+		float foo;
+		float interR = std::modf(delayR,&foo);
+		float interL = std::modf(delayL,&foo);
 
 		for (unsigned int i = 0; i < framesPerBuffer; ++i)
 		{
@@ -196,13 +199,18 @@ public:
 				std::cout << dist2LEar << "\t" << dist2REar << std::endl;
 			}
 
-			float sampleR = (indexR > 0 && indexR < maxSampleNum) ? source->getSamples()[indexR] : 0;
-			float sampleL = (indexL > 0 && indexL < maxSampleNum) ? source->getSamples()[indexL] : 0;
+			float sampleR1 = (indexR > 0 && indexR < maxSampleNum) ? source->getSamples()[indexR] : 0;
+			float sampleR2 = (indexR > 0 && indexR + 1 < maxSampleNum) ? source->getSamples()[indexR] : 0;
+			float sampleL1 = (indexL > 0 && indexL < maxSampleNum) ? source->getSamples()[indexL] : 0;
+			float sampleL2 = (indexL > 0 && indexL + 1 < maxSampleNum) ? source->getSamples()[indexL] : 0;
+
+			float sampleR = sampleR1*interR + sampleR2*(1.f-interR);
+			float sampleL = sampleL1*interL + sampleL2*(1.f-interL);
 
 			float ampR = 1.f/dist2REar;
 			float ampL = 1.f/dist2LEar;
 
-			//clamp max amplitude
+			//clamp max amplitude, just so the audio won't be too loud
 			ampR = std::min(ampR, 3.f);
 			ampL = std::min(ampL, 3.f);
 
